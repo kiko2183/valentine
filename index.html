@@ -285,9 +285,9 @@ function playBeep(){
 
 /* YES BUTTON */
 yesBtn.addEventListener("click",()=>{
-  if(attempts<10) return;
-  showSuccess();
+  showSuccess(); // тепер завжди працює при натисканні
 });
+
 
 function showSuccess(){
   document.querySelector(".screen").innerHTML=`

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love App 200/10 ❤️</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+/* Phone */
+.phone{
+  width:390px;
+  height:780px;
+  background:black;
+  border-radius:40px;
+  padding:12px;
+  box-shadow:0 0 60px rgba(255,0,120,0.6);
+  transition:0.2s;
+  overflow:hidden;
+}
+
+.shake{
+  animation:shake 0.3s;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-10px)}
+  50%{transform:translateX(10px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
+
+.screen{
+  width:100%;
+  height:100%;
+  background:linear-gradient(160deg,#ff2e79,#ff7eb3);
+  border-radius:30px;
+  padding:25px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Stars */
+.stars{
+  position:absolute;
+  inset:0;
+  z-index:0;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  opacity:0.8;
+  animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+  from{opacity:0.2;}
+  to{opacity:1;}
+}
+
+.status{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  color:white;
+  margin-bottom:40px;
+  z-index:1;
+}
+
+.content{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:1;
+}
+
+h1{
+  color:white;
+  font-size:24px;
+  margin-bottom:40px;
+  transition:0.3s;
+}
+
+.buttons{
+  position:relative;
+  display:flex;
+  gap:20px;
+  align-items:center;
+}
+
+button{
+  padding:14px 28px;
+  font-size:18px;
+  border:none;
+  border-radius:50px;
+  cursor:pointer;
+  transition:0.3s ease;
+}
+
+.yes{
+  background:white;
+  color:#ff2e79;
+  font-weight:bold;
+}
+
+.no{
+  background:#222;
+  color:white;
+  position:relative;
+}
+
+.fullscreen{
+  position:absolute !important;
+  inset:0;
+  width:100% !important;
+  height:100% !important;
+  border-radius:0 !important;
+  font-size:28px !important;
+}
+
+/* Success */
+.success{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(160deg,#ff0055,#ff66a3);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:white;
+  font-size:28px;
+}
+
+.hearts{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.heart{
+  position:absolute;
+  font-size:20px;
+  animation:float 4s linear forwards;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);opacity:1;}
+  to{transform:translateY(-10vh);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone" id="phone">
+<div class="screen">
+
+<div class="stars" id="stars"></div>
+
+<div class="status">
+<span>9:41</span>
+<span>❤️ 100%</span>
+</div>
+
+<div class="content">
+<h1 id="question">Будеш ти моєю Валентинкою? 💖</h1>
+<div class="buttons">
+<button class="yes" id="yesBtn">Так 💘</button>
+<button class="no" id="noBtn">Ні 😢</button>
+</div>
+</div>
+
+<div class="hearts" id="hearts"></div>
+
+</div>
+</div>
+
+<script>
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+const question=document.getElementById("question");
+const phone=document.getElementById("phone");
+
+let attempts=0;
+let scale=1;
+
+const messages=[
+"Ти впевнена? 😢",
+"Подумай ще раз...",
+"Я ж старався 🥺",
+"Ну будь ласка ❤️",
+"Це твій останній шанс 😳",
+"Не ламай мені серце 💔",
+"Я все одно доб'юсь 😈",
+"Ти ж знаєш правильну відповідь 😉",
+"Кнопка скоро зникне 😏",
+"Все… тепер тільки ТАК 😎"
+];
+
+/* Stars */
+function createStars(){
+  const stars=document.getElementById("stars");
+  for(let i=0;i<120;i++){
+    const star=document.createElement("div");
+    star.classList.add("star");
+    star.style.left=Math.random()*100+"%";
+    star.style.top=Math.random()*100+"%";
+    star.style.animationDuration=(Math.random()*2+1)+"s";
+    stars.appendChild(star);
+  }
+}
+createStars();
+
+/* NO BUTTON */
+function moveButton(e){
+  e.preventDefault();
+  attempts++;
+
+  if(navigator.vibrate){
+    navigator.vibrate(150);
+  }
+
+  phone.classList.add("shake");
+  setTimeout(()=>phone.classList.remove("shake"),300);
+
+  const maxX=120;
+  noBtn.style.position="relative";
+  noBtn.style.left=Math.random()*maxX+"px";
+
+  scale+=0.15;
+  yesBtn.style.transform=`scale(${scale})`;
+
+  if(attempts<=messages.length){
+    question.innerText=messages[attempts-1];
+  }
+
+  if(attempts>=10){
+    noBtn.style.display="none";
+
+    setTimeout(()=>{
+      yesBtn.classList.add("fullscreen");
+      yesBtn.innerText="ТАК 💍";
+
+      setTimeout(()=>{
+        showSuccess();
+      },1000);
+
+    },500);
+  }
+
+  playBeep();
+}
+
+noBtn.addEventListener("click",moveButton);
+noBtn.addEventListener("touchstart",moveButton);
+
+/* SOUND */
+function playBeep(){
+  const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const oscillator=ctx.createOscillator();
+  const gain=ctx.createGain();
+  oscillator.type="square";
+  oscillator.frequency.value=400;
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start();
+  gain.gain.exponentialRampToValueAtTime(0.00001,ctx.currentTime+0.3);
+}
+
+/* YES */
+yesBtn.addEventListener("click",showSuccess);
+
+function showSuccess(){
+  document.querySelector(".screen").innerHTML=`
+  <div class="success">
+    🎉 УРАААА!!! 🎉
+    <p style="margin-top:20px;font-size:20px;">
+    </p>
+
+    <div style="margin-top:25px; width:80%; max-width:300px;">
+      <div class="tenor-gif-embed"
+        data-postid="16038499"
+        data-share-method="host"
+        data-aspect-ratio="1"
+        data-width="100%">
+      </div>
+    </div>
+
+    <div class="hearts" id="hearts"></div>
+  </div>
+  `;
+
+  // Підключення Tenor скрипта
+  const script = document.createElement("script");
+  script.src = "https://tenor.com/embed.js";
+  script.async = true;
+  document.body.appendChild(script);
+
+  createHearts();
+}
+
+
+function createHearts(){
+  const container=document.getElementById("hearts");
+  setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerText="❤️";
+    heart.style.left=Math.random()*100+"%";
+    heart.style.fontSize=(Math.random()*25+15)+"px";
+    container.appendChild(heart);
+    setTimeout(()=>heart.remove(),4000);
+  },200);
+}
+</script>
+
+</body>
+</html>

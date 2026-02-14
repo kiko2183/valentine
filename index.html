@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Love App 200/10 ❤️</title>
+<title>Love App ❤️</title>
 
 <style>
 *{
@@ -15,14 +15,14 @@
 
 body{
   height:100vh;
-  background:#000;
+  background:black;
   display:flex;
   justify-content:center;
   align-items:center;
   overflow:hidden;
 }
 
-/* Phone */
+/* PHONE */
 .phone{
   width:390px;
   height:780px;
@@ -58,10 +58,11 @@ body{
   overflow:hidden;
 }
 
-/* Stars */
+/* MOVING STARS */
 .stars{
   position:absolute;
   inset:0;
+  overflow:hidden;
   z-index:0;
 }
 
@@ -71,13 +72,18 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
-  opacity:0.8;
-  animation:twinkle 2s infinite alternate;
+  animation:moveStar linear infinite;
 }
 
-@keyframes twinkle{
-  from{opacity:0.2;}
-  to{opacity:1;}
+@keyframes moveStar{
+  from{
+    transform:translateY(-10vh);
+    opacity:1;
+  }
+  to{
+    transform:translateY(110vh);
+    opacity:0;
+  }
 }
 
 .status{
@@ -134,16 +140,9 @@ button{
   position:relative;
 }
 
-.fullscreen{
-  position:absolute !important;
-  inset:0;
-  width:100% !important;
-  height:100% !important;
-  border-radius:0 !important;
-  font-size:28px !important;
-}
 
-/* Success */
+
+/* SUCCESS SCREEN */
 .success{
   position:absolute;
   inset:0;
@@ -155,8 +154,10 @@ button{
   text-align:center;
   color:white;
   font-size:28px;
+  padding:20px;
 }
 
+/* HEARTS */
 .hearts{
   position:absolute;
   inset:0;
@@ -196,8 +197,6 @@ button{
 </div>
 </div>
 
-<div class="hearts" id="hearts"></div>
-
 </div>
 </div>
 
@@ -223,15 +222,15 @@ const messages=[
 "Все… тепер тільки ТАК 😎"
 ];
 
-/* Stars */
+/* STARS */
 function createStars(){
   const stars=document.getElementById("stars");
-  for(let i=0;i<120;i++){
+  for(let i=0;i<100;i++){
     const star=document.createElement("div");
     star.classList.add("star");
     star.style.left=Math.random()*100+"%";
-    star.style.top=Math.random()*100+"%";
-    star.style.animationDuration=(Math.random()*2+1)+"s";
+    star.style.animationDuration=(Math.random()*5+3)+"s";
+    star.style.animationDelay=Math.random()*5+"s";
     stars.appendChild(star);
   }
 }
@@ -250,7 +249,6 @@ function moveButton(e){
   setTimeout(()=>phone.classList.remove("shake"),300);
 
   const maxX=120;
-  noBtn.style.position="relative";
   noBtn.style.left=Math.random()*maxX+"px";
 
   scale+=0.15;
@@ -262,16 +260,8 @@ function moveButton(e){
 
   if(attempts>=10){
     noBtn.style.display="none";
-
-    setTimeout(()=>{
-      yesBtn.classList.add("fullscreen");
-      yesBtn.innerText="ТАК 💍";
-
-      setTimeout(()=>{
-        showSuccess();
-      },1000);
-
-    },500);
+    yesBtn.classList.add("fullscreen");
+    yesBtn.innerText="ТАК";
   }
 
   playBeep();
@@ -293,8 +283,11 @@ function playBeep(){
   gain.gain.exponentialRampToValueAtTime(0.00001,ctx.currentTime+0.3);
 }
 
-/* YES */
-yesBtn.addEventListener("click",showSuccess);
+/* YES BUTTON */
+yesBtn.addEventListener("click",()=>{
+  if(attempts<10) return;
+  showSuccess();
+});
 
 function showSuccess(){
   document.querySelector(".screen").innerHTML=`
@@ -303,6 +296,7 @@ function showSuccess(){
     <p style="margin-top:20px;font-size:20px;">
     </p>
 
+    <!-- GIF -->
     <div style="margin-top:25px; width:80%; max-width:300px;">
       <div class="tenor-gif-embed"
         data-postid="16038499"
@@ -312,20 +306,21 @@ function showSuccess(){
       </div>
     </div>
 
+    <!-- HEARTS -->
     <div class="hearts" id="hearts"></div>
   </div>
   `;
 
-  // Підключення Tenor скрипта
-  const script = document.createElement("script");
-  script.src = "https://tenor.com/embed.js";
-  script.async = true;
+  // Tenor script
+  const script=document.createElement("script");
+  script.src="https://tenor.com/embed.js";
+  script.async=true;
   document.body.appendChild(script);
 
   createHearts();
 }
 
-
+/* HEARTS */
 function createHearts(){
   const container=document.getElementById("hearts");
   setInterval(()=>{
